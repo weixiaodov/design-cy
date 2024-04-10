@@ -32,9 +32,14 @@ public abstract class AbstractMapCache<T> extends AbstractCache<Map<String, T>> 
     public T cache(String key) {
         T data = null;
         if (cacheable()) {
-            data = load(key);
-            if (Objects.nonNull(data)) {
-                redisTemplate.opsForHash().put(key, key, data);
+            if (exists()) {
+                data = load(key);
+                if (Objects.nonNull(data)) {
+                    redisTemplate.opsForHash().put(mainKey(), key, data);
+                }
+            } else {
+                Map<String, T> dataMap = cache();
+                return dataMap.get(key);
             }
         }
         return data;
