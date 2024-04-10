@@ -16,11 +16,6 @@ import java.util.stream.Collectors;
 public class TestMapCache extends AbstractMapCache<TestDTO> {
 
     @Override
-    public InitStrategy strategy() {
-        return InitStrategy.always;
-    }
-
-    @Override
     protected TestDTO load(String key) {
         Random random = new Random();
         TestDTO testDTO1 = new TestDTO();

@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>cache-cy</module>
+        <module>process-cy</module>
     </modules>
 
     <properties>

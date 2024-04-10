@@ -64,9 +64,8 @@ public abstract class AbstractMapCache<T> extends AbstractCache<Map<String, T>> 
     public Map<String, T> get() {
         if (this.exists()) {
             return redisTemplate.opsForHash().entries(mainKey());
-        } else {
-            return cache();
         }
+        return cache();
     }
 
     public T get(String key) {
