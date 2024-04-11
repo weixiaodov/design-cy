@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: process-cy
+  redis:
+    cluster:
+      nodes:
+        - 10.223.24.9:6379
+    lettuce:
+      pool:
+        max-wait: 3000
+        maxActive: 8
+        maxIdle: 8
+    password: p03yl$lSbIpm0MgaIPc#
+    timeout: 10000

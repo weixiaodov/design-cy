@@ -77,11 +77,6 @@ public abstract class AbstractMapCache<T> extends AbstractCache<Map<String, T>> 
         }
     }
 
-    /**
-     * exists
-     *
-     * @return
-     */
     @Override
     public boolean exists() {
         return redisTemplate.hasKey(mainKey());
