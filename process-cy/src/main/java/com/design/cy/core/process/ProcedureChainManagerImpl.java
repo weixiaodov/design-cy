@@ -38,7 +38,7 @@ public class ProcedureChainManagerImpl implements IProcedureChainManager {
                 context.setSuccess(Boolean.FALSE);
                 context.setCode(String.valueOf(e.getCode()));
                 context.setMessage(e.getMessage());
-                //context.setArgs(e.getArgs());
+                context.setArgs(e.getArgs());
                 if (!context.getSendMq()) {
                     throw e;
                 }

@@ -1,9 +1,19 @@
 package com.design.cy.core.process;
 
+import com.design.cy.core.exception.RollbackException;
+import com.google.common.collect.Maps;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyContext;
+import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyStatus;
+import org.apache.rocketmq.client.consumer.listener.MessageListenerOrderly;
+import org.apache.rocketmq.common.message.MessageExt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationListener;
 
+import javax.annotation.Resource;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -15,21 +25,17 @@ import java.util.UUID;
  */
 @Slf4j
 @Data
-public class ProcedureManagerImpl extends NormalMessageListener<ProcedureSubmitTask>  implements
-        IProcedureManager {
+public class ProcedureManagerImpl implements IProcedureManager, ApplicationListener<ApplicationReadyEvent> {
 
-    @Autowired
-    private listeber sendMqHelper;
-
-    @Autowired
-
-    private listener mqTagNames;
+    @Resource
+    private List<IProcedureChainManager> procedureChainManagerList;
     /*
     流程名对应列表映射map
     key为流程名
     value是处理流程的processor列表
      */
-    private Map<String, IProcedureChainManager> procedureChainManagerMap;
+    private Map<Class, IProcedureChainManager> procedureChainManagerMap = Maps.newConcurrentMap();
+
 
     @Override
     public void submit(ProcedureSubmitTask task) {
@@ -72,5 +78,18 @@ public class ProcedureManagerImpl extends NormalMessageListener<ProcedureSubmitT
 
     @Override protected void doBusiness(MessageDTO<ProcedureSubmitTask> messageDTO) {
         rollback(messageDTO.getBody());
+    }
+
+    @Override
+    public ConsumeOrderlyStatus consumeMessage(List<MessageExt> msgs, ConsumeOrderlyContext context) {
+        return null;
+    }
+
+    @Override
+    public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
+        for (IProcedureChainManager chainManager : procedureChainManagerList) {
+            procedureChainManagerMap.put(chainManager.getClass(), chainManager);
+        }
+
     }
 }
